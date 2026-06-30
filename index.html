@@ -67,8 +67,6 @@
         .btn-speak:hover { background: #db2777; transform: scale(1.05); }
         .btn-next { background: #3b82f6; color: white; }
         .btn-next:hover { background: #2563eb; transform: scale(1.05); }
-        .btn-random { background: #8b5cf6; color: white; }
-        .btn-random:hover { background: #7c3aed; transform: scale(1.05); }
         .lang-toggle {
             position: absolute;
             top: 20px;
@@ -103,10 +101,8 @@
     </div>
     
     <div class="controls">
-        <button class="btn-reveal" id="reveal-btn">เผยชื่อเต็ม</button>
+        <button class="btn-reveal" id="action-btn">เผยชื่อเต็ม</button>
         <button class="btn-speak" id="speak-btn" disabled>🔊 Speak</button>
-        <button class="btn-next" id="next-btn">ธาตุถัดไป</button>
-        <button class="btn-random" id="random-btn">สุ่มใหม่</button>
     </div>
     
     <div class="stats">
@@ -116,7 +112,7 @@
     
     <div class="info" id="info">
         กด <strong>เผยชื่อเต็ม</strong> → กด <strong>🔊 Speak</strong> เพื่อฟังเสียง<br>
-        ใช้ <strong>ธาตุถัดไป</strong> หรือ <strong>สุ่มใหม่</strong>
+        หรือกดปุ่มเดิมซ้ำเพื่อเปลี่ยนเป็น <strong>ธาตุถัดไป</strong>
     </div>
 
     <script>
@@ -192,7 +188,7 @@
             { symbol: "Tm", name: "ทูเลียม", enName: "Thulium", number: 69 },
             { symbol: "Yb", name: "อิตเทอร์เบียม", enName: "Ytterbium", number: 70 },
             { symbol: "Lu", name: "ลูทีเชียม", enName: "Lutetium", number: 71 },
-            { symbol: "Hf", name: "แฮฟเนียม", enName: "Hafnium", number: 72 },
+            { symbol: "Hf", name: "แแฮฟเนียม", enName: "Hafnium", number: 72 },
             { symbol: "Ta", name: "แทนทาลัม", enName: "Tantalum", number: 73 },
             { symbol: "W",  name: "ทังสเตน", enName: "Tungsten", number: 74 },
             { symbol: "Re", name: "เรเนียม", enName: "Rhenium", number: 75 },
@@ -228,7 +224,7 @@
             { symbol: "Db", name: "ดูบเนียม", enName: "Dubnium", number: 105 },
             { symbol: "Sg", name: "ซีบอร์เกียม", enName: "Seaborgium", number: 106 },
             { symbol: "Bh", name: "โบห์เรียม", enName: "Bohrium", number: 107 },
-            { symbol: "Hs", name: "แฮสเซียม", enName: "Hassium", number: 108 },
+            { symbol: "Hs", name: "แแฮสเซียม", enName: "Hassium", number: 108 },
             { symbol: "Mt", name: "ไมต์เนเรียม", enName: "Meitnerium", number: 109 },
             { symbol: "Ds", name: "ดาร์มสตัดเทียม", enName: "Darmstadtium", number: 110 },
             { symbol: "Rg", name: "เรินต์เกเนียม", enName: "Roentgenium", number: 111 },
@@ -248,10 +244,8 @@
         const symbolEl = document.getElementById('symbol');
         const nameEl = document.getElementById('name');
         const numberEl = document.getElementById('atomic-number');
-        const revealBtn = document.getElementById('reveal-btn');
+        const actionBtn = document.getElementById('action-btn');
         const speakBtn = document.getElementById('speak-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const randomBtn = document.getElementById('random-btn');
         const langBtn = document.getElementById('lang-btn');
         const titleEl = document.getElementById('title');
         const subtitleEl = document.getElementById('subtitle');
@@ -271,7 +265,8 @@
             nameEl.classList.add('hidden');
             numberEl.textContent = isThai ? `เลขอะตอม: ${currentElement.number}` : `Atomic Number: ${currentElement.number}`;
             
-            revealBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
+            actionBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
+            actionBtn.className = 'btn-reveal';
             speakBtn.disabled = true;
         }
 
@@ -282,8 +277,18 @@
             revealed = true;
             score++; total++; streak++;
             updateStats();
-            revealBtn.textContent = isThai ? 'เผยแล้ว ✓' : 'Revealed ✓';
+            
+            actionBtn.textContent = isThai ? 'ธาตุถัดไป →' : 'Next Element →';
+            actionBtn.className = 'btn-next';
             speakBtn.disabled = false;
+        }
+
+        function handleActionClick() {
+            if (!revealed) {
+                revealName();
+            } else {
+                loadNewElement();
+            }
         }
 
         function speakName() {
@@ -311,12 +316,15 @@
             subtitleEl.textContent = isThai ? 'เดาสัญลักษณ์ธาตุ!' : 'Guess the element from its symbol!';
             
             infoEl.innerHTML = isThai ? 
-                'กด <strong>เผยชื่อเต็ม</strong> → กด <strong>🔊 Speak</strong> เพื่อฟังเสียง<br>ใช้ <strong>ธาตุถัดไป</strong> หรือ <strong>สุ่มใหม่</strong>' :
-                'Click <strong>Reveal</strong> → Click <strong>🔊 Speak</strong> to hear<br>Use <strong>Next</strong> or <strong>Random</strong>';
+                'กด <strong>เผยชื่อเต็ม</strong> → กด <strong>🔊 Speak</strong> เพื่อฟังเสียง<br>หรือกดปุ่มเดิมซ้ำเพื่อเปลี่ยนเป็น <strong>ธาตุถัดไป</strong>' :
+                'Click <strong>Reveal</strong> → Click <strong>🔊 Speak</strong> to hear<br>Or click the same button again for <strong>Next Element</strong>';
             
-            revealBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
-            nextBtn.textContent = isThai ? 'ธาตุถัดไป' : 'Next Element';
-            randomBtn.textContent = isThai ? 'สุ่มใหม่' : 'Random More';
+            if (revealed) {
+                actionBtn.textContent = isThai ? 'ธาตุถัดไป →' : 'Next Element →';
+            } else {
+                actionBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
+            }
+            
             speakBtn.textContent = '🔊 Speak';
             
             if (currentElement && revealed) {
@@ -327,15 +335,15 @@
         }
 
         // Event Listeners
-        revealBtn.addEventListener('click', revealName);
+        actionBtn.addEventListener('click', handleActionClick);
         speakBtn.addEventListener('click', speakName);
-        nextBtn.addEventListener('click', () => { if(!revealed){total++; streak=0; updateStats();} loadNewElement(); });
-        randomBtn.addEventListener('click', () => { if(!revealed){total++; streak=0; updateStats();} loadNewElement(); });
         langBtn.addEventListener('click', toggleLanguage);
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.key === 'Enter') revealed ? loadNewElement() : revealName();
-            if (e.key.toLowerCase() === 'r') loadNewElement();
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault(); 
+                handleActionClick();
+            }
             if (e.key.toLowerCase() === 's' && revealed) speakName();
         });
 
