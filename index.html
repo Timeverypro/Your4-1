@@ -1,355 +1,284 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตารางธาตุบ้า ๆ - ทดสอบธาตุ</title>
+    <title>Jitirat Kwansri | Academic Lab</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
             background: linear-gradient(135deg, #0f172a, #1e2937);
             color: #e2e8f0;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
-        h1 { color: #60a5fa; margin-bottom: 10px; }
-        .subtitle { color: #94a3b8; margin-bottom: 30px; }
-        .card {
-            background: #1e2937;
-            border-radius: 16px;
-            padding: 40px 60px;
-            width: 380px;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
-            border: 2px solid #334155;
-            transition: transform 0.3s ease;
-        }
-        .card:hover { transform: translateY(-5px); }
-        .symbol {
-            font-size: 120px;
-            font-weight: bold;
-            color: #60a5fa;
-            margin: 20px 0;
-            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
-        }
-        .name {
-            font-size: 26px;
-            font-weight: 600;
-            color: #a5b4fc;
-            margin: 20px 0;
-            min-height: 70px;
-            line-height: 1.3;
-        }
-        .hidden { opacity: 0; transition: opacity 0.4s ease; }
-        .controls {
-            margin-top: 30px;
+        
+        header {
+            width: 100%;
+            max-width: 900px;
             display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 20px;
         }
-        button {
-            padding: 12px 24px;
+        .credits {
             font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            color: #94a3b8;
+            font-weight: 500;
         }
-        .btn-reveal { background: #22c55e; color: white; }
-        .btn-reveal:hover { background: #16a34a; transform: scale(1.05); }
-        .btn-speak { background: #ec4899; color: white; }
-        .btn-speak:hover { background: #db2777; transform: scale(1.05); }
-        .btn-next { background: #3b82f6; color: white; }
-        .btn-next:hover { background: #2563eb; transform: scale(1.05); }
+        .credits strong {
+            color: #3b82f6;
+        }
+
         .lang-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: #334155;
             color: white;
             padding: 8px 16px;
             border-radius: 9999px;
             cursor: pointer;
             font-size: 14px;
+            border: none;
+            font-weight: 600;
+            transition: background 0.2s;
         }
-        .stats { margin-top: 20px; color: #64748b; font-size: 14px; }
-        .info {
-            max-width: 500px;
+        .lang-toggle:hover {
+            background: #475569;
+        }
+
+        .hero {
             text-align: center;
-            margin-top: 40px;
+            max-width: 600px;
+            margin-bottom: 50px;
+        }
+        .hero h1 {
+            font-size: 42px;
+            color: #f8fafc;
+            margin: 0 0 15px 0;
+            font-weight: 800;
+        }
+        .hero p {
+            font-size: 18px;
             color: #64748b;
             line-height: 1.6;
+            margin: 0;
         }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card {
+            background: #1e2937;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #475569;
+        }
+
+        .card.active-project {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            color: #f1f5f9;
+        }
+        .card p {
+            margin: 0 0 25px 0;
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: scale(1.02);
+        }
+        
+        .card.future-project {
+            opacity: 0.6;
+            border-style: dashed;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .card.future-project:hover {
+            opacity: 0.8;
+        }
+        .btn-secondary {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+        .badge-live { background: #22c55e; color: white; }
+        .badge-soon { background: #64748b; color: #cbd5e1; }
     </style>
 </head>
 <body>
-    <button class="lang-toggle" id="lang-btn">English</button>
-    
-    <h1 id="title">🧪 ตารางธาตุบ้า ๆ</h1>
-    <p class="subtitle" id="subtitle">เดาสัญลักษณ์ธาตุ!</p>
-    
-    <div class="card" id="card">
-        <div id="atomic-number" style="font-size: 18px; color: #64748b; margin-bottom: 10px;"></div>
-        <div class="symbol" id="symbol">??</div>
-        <div class="name" id="name"></div>
+
+    <header>
+        <div class="credits" id="header-credits">
+            Website by <strong>Jitirat Kwansri</strong>
+        </div>
+        <button class="lang-toggle" id="lang-btn">ภาษาไทย</button>
+    </header>
+
+    <div class="hero">
+        <h1 id="hero-title">Academic & Project Hub</h1>
+        <p id="hero-desc">Welcome to my workspace. Access active educational modules, review workloads, or browse upcoming academic logs below.</p>
     </div>
-    
-    <div class="controls">
-        <button class="btn-reveal" id="action-btn">เผยชื่อเต็ม</button>
-        <button class="btn-speak" id="speak-btn" disabled>🔊 Speak</button>
-    </div>
-    
-    <div class="stats">
-        <span id="score">คะแนน: 0 / 0</span> | 
-        <span id="streak">สตรีค: 0</span>
-    </div>
-    
-    <div class="info" id="info">
-        กด <strong>เผยชื่อเต็ม</strong> → กด <strong>🔊 Speak</strong> เพื่อฟังเสียง<br>
-        หรือกดปุ่มเดิมซ้ำเพื่อเปลี่ยนเป็น <strong>ธาตุถัดไป</strong>
+
+    <div class="grid">
+        <div class="card active-project">
+            <span class="badge badge-live" id="badge-live">Active</span>
+            <div class="card-icon">🧪</div>
+            <h3 id="g1-title">Pidiotic Table</h3>
+            <p id="g1-desc">An interactive chemistry study module featuring element nomenclature testing, audio pronunciations, and mixed identification systems.</p>
+            <a href="sub/pidiotic-table.html" class="btn btn-primary" id="g1-btn">Enter →</a>
+        </div>
+
+        <div class="card future-project">
+            <span class="badge badge-soon" id="badge-soon-1">Soon</span>
+            <div class="card-icon">📋</div>
+            <h3 id="g2-title">Workload & Tasks</h3>
+            <p id="g2-desc">A centralized tracker for academic assignments, research workloads, and upcoming project deadlines.</p>
+            <button class="btn btn-secondary" id="g2-btn" disabled>Locked</button>
+        </div>
+
+        <div class="card future-project">
+            <span class="badge badge-soon" id="badge-soon-2">Soon</span>
+            <div class="card-icon">🎉</div>
+            <h3 id="g3-title">Activities</h3>
+            <p id="g3-desc">A log documenting institutional events, academic certificates, seminars, and extracurricular portfolios.</p>
+            <button class="btn btn-secondary" id="g3-btn" disabled>Locked</button>
+        </div>
     </div>
 
     <script>
-        const elements = [
-            { symbol: "H",  name: "ไฮโดรเจน", enName: "Hydrogen", number: 1 },
-            { symbol: "He", name: "ฮีเลียม", enName: "Helium", number: 2 },
-            { symbol: "Li", name: "ลิเทียม", enName: "Lithium", number: 3 },
-            { symbol: "Be", name: "เบริลเลียม", enName: "Beryllium", number: 4 },
-            { symbol: "B",  name: "โบรอน", enName: "Boron", number: 5 },
-            { symbol: "C",  name: "คาร์บอน", enName: "Carbon", number: 6 },
-            { symbol: "N",  name: "ไนโตรเจน", enName: "Nitrogen", number: 7 },
-            { symbol: "O",  name: "ออกซิเจน", enName: "Oxygen", number: 8 },
-            { symbol: "F",  name: "ฟลูออรีน", enName: "Fluorine", number: 9 },
-            { symbol: "Ne", name: "นีออน", enName: "Neon", number: 10 },
-            { symbol: "Na", name: "โซเดียม", enName: "Sodium", number: 11 },
-            { symbol: "Mg", name: "แมกนีเซียม", enName: "Magnesium", number: 12 },
-            { symbol: "Al", name: "อะลูมิเนียม", enName: "Aluminum", number: 13 },
-            { symbol: "Si", name: "ซิลิคอน", enName: "Silicon", number: 14 },
-            { symbol: "P",  name: "ฟอสฟอรัส", enName: "Phosphorus", number: 15 },
-            { symbol: "S",  name: "ซัลเฟอร์", enName: "Sulfur", number: 16 },
-            { symbol: "Cl", name: "คลอรีน", enName: "Chlorine", number: 17 },
-            { symbol: "Ar", name: "อาร์กอน", enName: "Argon", number: 18 },
-            { symbol: "K",  name: "โพแทสเซียม", enName: "Potassium", number: 19 },
-            { symbol: "Ca", name: "แคลเซียม", enName: "Calcium", number: 20 },
-            { symbol: "Sc", name: "สแกนเดียม", enName: "Scandium", number: 21 },
-            { symbol: "Ti", name: "ไทเทเนียม", enName: "Titanium", number: 22 },
-            { symbol: "V",  name: "วาเนเดียม", enName: "Vanadium", number: 23 },
-            { symbol: "Cr", name: "โครเมียม", enName: "Chromium", number: 24 },
-            { symbol: "Mn", name: "แมงกานีส", enName: "Manganese", number: 25 },
-            { symbol: "Fe", name: "เหล็ก", enName: "Iron", number: 26 },
-            { symbol: "Co", name: "โคบอลต์", enName: "Cobalt", number: 27 },
-            { symbol: "Ni", name: "นิกเกิล", enName: "Nickel", number: 28 },
-            { symbol: "Cu", name: "ทองแดง", enName: "Copper", number: 29 },
-            { symbol: "Zn", name: "สังกะสี", enName: "Zinc", number: 30 },
-            { symbol: "Ga", name: "แกลเลียม", enName: "Gallium", number: 31 },
-            { symbol: "Ge", name: "เจอร์เมเนียม", enName: "Germanium", number: 32 },
-            { symbol: "As", name: "อาร์เซนิก", enName: "Arsenic", number: 33 },
-            { symbol: "Se", name: "ซีลีเนียม", enName: "Selenium", number: 34 },
-            { symbol: "Br", name: "โบรมีน", enName: "Bromine", number: 35 },
-            { symbol: "Kr", name: "คริปทอน", enName: "Krypton", number: 36 },
-            { symbol: "Rb", name: "รูบิเดียม", enName: "Rubidium", number: 37 },
-            { symbol: "Sr", name: "สตรอนเชียม", enName: "Strontium", number: 38 },
-            { symbol: "Y",  name: "อิตเทรียม", enName: "Yttrium", number: 39 },
-            { symbol: "Zr", name: "เซอร์โคเนียม", enName: "Zirconium", number: 40 },
-            { symbol: "Nb", name: "ไนโอเบียม", enName: "Niobium", number: 41 },
-            { symbol: "Mo", name: "โมลิบดีนัม", enName: "Molybdenum", number: 42 },
-            { symbol: "Tc", name: "เทคนีเชียม", enName: "Technetium", number: 43 },
-            { symbol: "Ru", name: "รูทีเนียม", enName: "Ruthenium", number: 44 },
-            { symbol: "Rh", name: "โรเดียม", enName: "Rhodium", number: 45 },
-            { symbol: "Pd", name: "แพลเลเดียม", enName: "Palladium", number: 46 },
-            { symbol: "Ag", name: "เงิน", enName: "Silver", number: 47 },
-            { symbol: "Cd", name: "แคดเมียม", enName: "Cadmium", number: 48 },
-            { symbol: "In", name: "อินเดียม", enName: "Indium", number: 49 },
-            { symbol: "Sn", name: "ดีบุก", enName: "Tin", number: 50 },
-            { symbol: "Sb", name: "แอนติโมนี", enName: "Antimony", number: 51 },
-            { symbol: "Te", name: "เทลลูเรียม", enName: "Tellurium", number: 52 },
-            { symbol: "I",  name: "ไอโอดีน", enName: "Iodine", number: 53 },
-            { symbol: "Xe", name: "ซีนอน", enName: "Xenon", number: 54 },
-            { symbol: "Cs", name: "ซีเซียม", enName: "Cesium", number: 55 },
-            { symbol: "Ba", name: "แบเรียม", enName: "Barium", number: 56 },
-            { symbol: "La", name: "แลนทานัม", enName: "Lanthanum", number: 57 },
-            { symbol: "Ce", name: "เซเรียม", enName: "Cerium", number: 58 },
-            { symbol: "Pr", name: "เพรซีโอดิเมียม", enName: "Praseodymium", number: 59 },
-            { symbol: "Nd", name: "นีโอดิเมียม", enName: "Neodymium", number: 60 },
-            { symbol: "Pm", name: "โพรมีเทียม", enName: "Promethium", number: 61 },
-            { symbol: "Sm", name: "ซาแมเรียม", enName: "Samarium", number: 62 },
-            { symbol: "Eu", name: "ยูโรเปียม", enName: "Europium", number: 63 },
-            { symbol: "Gd", name: "แกโดลิเนียม", enName: "Gadolinium", number: 64 },
-            { symbol: "Tb", name: "เทอร์เบียม", enName: "Terbium", number: 65 },
-            { symbol: "Dy", name: "ดิสโพรเซียม", enName: "Dysprosium", number: 66 },
-            { symbol: "Ho", name: "โฮลเมียม", enName: "Holmium", number: 67 },
-            { symbol: "Er", name: "เออร์เบียม", enName: "Erbium", number: 68 },
-            { symbol: "Tm", name: "ทูเลียม", enName: "Thulium", number: 69 },
-            { symbol: "Yb", name: "อิตเทอร์เบียม", enName: "Ytterbium", number: 70 },
-            { symbol: "Lu", name: "ลูทีเชียม", enName: "Lutetium", number: 71 },
-            { symbol: "Hf", name: "แแฮฟเนียม", enName: "Hafnium", number: 72 },
-            { symbol: "Ta", name: "แทนทาลัม", enName: "Tantalum", number: 73 },
-            { symbol: "W",  name: "ทังสเตน", enName: "Tungsten", number: 74 },
-            { symbol: "Re", name: "เรเนียม", enName: "Rhenium", number: 75 },
-            { symbol: "Os", name: "ออสเมียม", enName: "Osmium", number: 76 },
-            { symbol: "Ir", name: "อิริเดียม", enName: "Iridium", number: 77 },
-            { symbol: "Pt", name: "แพลตินัม", enName: "Platinum", number: 78 },
-            { symbol: "Au", name: "ทอง", enName: "Gold", number: 79 },
-            { symbol: "Hg", name: "ปรอท", enName: "Mercury", number: 80 },
-            { symbol: "Tl", name: "แทลเลียม", enName: "Thallium", number: 81 },
-            { symbol: "Pb", name: "ตะกั่ว", enName: "Lead", number: 82 },
-            { symbol: "Bi", name: "บิสมัท", enName: "Bismuth", number: 83 },
-            { symbol: "Po", name: "โพลโลเนียม", enName: "Polonium", number: 84 },
-            { symbol: "At", name: "แอสทาทีน", enName: "Astatine", number: 85 },
-            { symbol: "Rn", name: "เรดอน", enName: "Radon", number: 86 },
-            { symbol: "Fr", name: "แฟรนเซียม", enName: "Francium", number: 87 },
-            { symbol: "Ra", name: "เรเดียม", enName: "Radium", number: 88 },
-            { symbol: "Ac", name: "แอคทิเนียม", enName: "Actinium", number: 89 },
-            { symbol: "Th", name: "ทอเรียม", enName: "Thorium", number: 90 },
-            { symbol: "Pa", name: "โปรแทกทิเนียม", enName: "Protactinium", number: 91 },
-            { symbol: "U",  name: "ยูเรเนียม", enName: "Uranium", number: 92 },
-            { symbol: "Np", name: "เนปทูเนียม", enName: "Neptunium", number: 93 },
-            { symbol: "Pu", name: "พลูโทเนียม", enName: "Plutonium", number: 94 },
-            { symbol: "Am", name: "อเมริเซียม", enName: "Americium", number: 95 },
-            { symbol: "Cm", name: "คูเรียม", enName: "Curium", number: 96 },
-            { symbol: "Bk", name: "เบอร์คีเลียม", enName: "Berkelium", number: 97 },
-            { symbol: "Cf", name: "แคลิฟอร์เนียม", enName: "Californium", number: 98 },
-            { symbol: "Es", name: "ไอน์สไตเนียม", enName: "Einsteinium", number: 99 },
-            { symbol: "Fm", name: "เฟอร์เมียม", enName: "Fermium", number: 100 },
-            { symbol: "Md", name: "เมนเดเลเวียม", enName: "Mendelevium", number: 101 },
-            { symbol: "No", name: "โนเบเลียม", enName: "Nobelium", number: 102 },
-            { symbol: "Lr", name: "ลอเรนเซียม", enName: "Lawrencium", number: 103 },
-            { symbol: "Rf", name: "รัทเทอร์ฟอร์เดียม", enName: "Rutherfordium", number: 104 },
-            { symbol: "Db", name: "ดูบเนียม", enName: "Dubnium", number: 105 },
-            { symbol: "Sg", name: "ซีบอร์เกียม", enName: "Seaborgium", number: 106 },
-            { symbol: "Bh", name: "โบห์เรียม", enName: "Bohrium", number: 107 },
-            { symbol: "Hs", name: "แแฮสเซียม", enName: "Hassium", number: 108 },
-            { symbol: "Mt", name: "ไมต์เนเรียม", enName: "Meitnerium", number: 109 },
-            { symbol: "Ds", name: "ดาร์มสตัดเทียม", enName: "Darmstadtium", number: 110 },
-            { symbol: "Rg", name: "เรินต์เกเนียม", enName: "Roentgenium", number: 111 },
-            { symbol: "Cn", name: "โคเปอร์นิเซียม", enName: "Copernicium", number: 112 },
-            { symbol: "Nh", name: "นิโฮเนียม", enName: "Nihonium", number: 113 },
-            { symbol: "Fl", name: "ฟลีโรเวียม", enName: "Flerovium", number: 114 },
-            { symbol: "Mc", name: "มอสโกเวียม", enName: "Moscovium", number: 115 },
-            { symbol: "Lv", name: "ลิเวอร์มอเรียม", enName: "Livermorium", number: 116 },
-            { symbol: "Ts", name: "เทนเนสซีน", enName: "Tennessine", number: 117 },
-            { symbol: "Og", name: "โอกาเนสซอน", enName: "Oganesson", number: 118 }
-        ];
+        let isThai = false;
 
-        let currentElement = null;
-        let score = 0, total = 0, streak = 0, revealed = false;
-        let isThai = true;
-
-        const symbolEl = document.getElementById('symbol');
-        const nameEl = document.getElementById('name');
-        const numberEl = document.getElementById('atomic-number');
-        const actionBtn = document.getElementById('action-btn');
-        const speakBtn = document.getElementById('speak-btn');
         const langBtn = document.getElementById('lang-btn');
-        const titleEl = document.getElementById('title');
-        const subtitleEl = document.getElementById('subtitle');
-        const infoEl = document.getElementById('info');
-        const scoreEl = document.getElementById('score');
-        const streakEl = document.getElementById('streak');
+        const headerCredits = document.getElementById('header-credits');
+        const heroTitle = document.getElementById('hero-title');
+        const heroDesc = document.getElementById('hero-desc');
+        
+        const badgeLive = document.getElementById('badge-live');
+        const badgeSoon1 = document.getElementById('badge-soon-1');
+        const badgeSoon2 = document.getElementById('badge-soon-2');
+        
+        const g1Title = document.getElementById('g1-title');
+        const g1Desc = document.getElementById('g1-desc');
+        const g1Btn = document.getElementById('g1-btn');
 
-        function getRandomElement() {
-            return elements[Math.floor(Math.random() * elements.length)];
-        }
+        const g2Title = document.getElementById('g2-title');
+        const g2Desc = document.getElementById('g2-desc');
+        const g2Btn = document.getElementById('g2-btn');
 
-        function loadNewElement() {
-            currentElement = getRandomElement();
-            revealed = false;
-            symbolEl.textContent = currentElement.symbol;
-            nameEl.textContent = '';
-            nameEl.classList.add('hidden');
-            numberEl.textContent = isThai ? `เลขอะตอม: ${currentElement.number}` : `Atomic Number: ${currentElement.number}`;
-            
-            actionBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
-            actionBtn.className = 'btn-reveal';
-            speakBtn.disabled = true;
-        }
-
-        function revealName() {
-            if (!currentElement || revealed) return;
-            nameEl.textContent = isThai ? currentElement.name : currentElement.enName;
-            nameEl.classList.remove('hidden');
-            revealed = true;
-            score++; total++; streak++;
-            updateStats();
-            
-            actionBtn.textContent = isThai ? 'ธาตุถัดไป →' : 'Next Element →';
-            actionBtn.className = 'btn-next';
-            speakBtn.disabled = false;
-        }
-
-        function handleActionClick() {
-            if (!revealed) {
-                revealName();
-            } else {
-                loadNewElement();
-            }
-        }
-
-        function speakName() {
-            if (!currentElement || !revealed) return;
-            
-            const utterance = new SpeechSynthesisUtterance(currentElement.enName);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.95;
-            utterance.pitch = 1.05;
-            
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function updateStats() {
-            scoreEl.textContent = isThai ? `คะแนน: ${score} / ${total}` : `Score: ${score} / ${total}`;
-            streakEl.textContent = isThai ? `สตรีค: ${streak}` : `Streak: ${streak}`;
-        }
+        const g3Title = document.getElementById('g3-title');
+        const g3Desc = document.getElementById('g3-desc');
+        const g3Btn = document.getElementById('g3-btn');
 
         function toggleLanguage() {
             isThai = !isThai;
             langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
-            
-            titleEl.textContent = isThai ? '🧪 ตารางธาตุบ้า ๆ' : '🧪 Pidiotic Table';
-            subtitleEl.textContent = isThai ? 'เดาสัญลักษณ์ธาตุ!' : 'Guess the element from its symbol!';
-            
-            infoEl.innerHTML = isThai ? 
-                'กด <strong>เผยชื่อเต็ม</strong> → กด <strong>🔊 Speak</strong> เพื่อฟังเสียง<br>หรือกดปุ่มเดิมซ้ำเพื่อเปลี่ยนเป็น <strong>ธาตุถัดไป</strong>' :
-                'Click <strong>Reveal</strong> → Click <strong>🔊 Speak</strong> to hear<br>Or click the same button again for <strong>Next Element</strong>';
-            
-            if (revealed) {
-                actionBtn.textContent = isThai ? 'ธาตุถัดไป →' : 'Next Element →';
+
+            if (isThai) {
+                headerCredits.innerHTML = 'เว็บไซต์โดย <strong>จิติราชย์ ขวัญศรี</strong>';
+                heroTitle.textContent = 'ศูนย์รวมข้อมูลและโปรเจกต์';
+                heroDesc.textContent = 'ยินดีต้อนรับสู่พื้นที่ทำงานของฉัน เข้าสู่บทเรียนวิชาเคมี ตรวจสอบภาระงานสะสม หรือดูบันทึกกิจกรรมต่าง ๆ ด้านล่างนี้';
+                
+                badgeLive.textContent = 'เปิดใช้งาน';
+                badgeSoon1.textContent = 'เร็วๆ นี้';
+                badgeSoon2.textContent = 'เร็วๆ นี้';
+
+                g1Title.textContent = 'ตารางธาตุบ้า ๆ';
+                g1Desc.textContent = 'ระบบทบทวนบทเรียนเรื่องธาตุเคมี มาพร้อมฟังก์ชันฝึกประมวลความรู้ การสลับโหมดคำถาม และระบบช่วยออกเสียงสำเนียงสากล';
+                g1Btn.textContent = 'เข้าสู่เนื้อหา →';
+
+                g2Title.textContent = 'ภาระงาน';
+                g2Desc.textContent = 'ระบบบันทึกและติดตามภาระงาน รายการการบ้าน รายงาน และกำหนดการส่งงานวิชาการต่าง ๆ เพื่อความเป็นระเบียบ';
+                g2Btn.textContent = 'ถูกล็อกไว้';
+
+                g3Title.textContent = 'กิจกรรม';
+                g3Desc.textContent = 'บันทึกประวัติการเข้าร่วมกิจกรรมพิเศษ งานสัมมนา ค่ายวิชาการ และแฟ้มสะสมผลงานส่วนบุคคล';
+                g3Btn.textContent = 'ถูกล็อกไว้';
             } else {
-                actionBtn.textContent = isThai ? 'เผยชื่อเต็ม' : 'Reveal Full Name';
+                headerCredits.innerHTML = 'Website by <strong>Jitirat Kwansri</strong>';
+                heroTitle.textContent = 'Academic & Project Hub';
+                heroDesc.textContent = 'Welcome to my workspace. Access active educational modules, review workloads, or browse upcoming academic logs below.';
+                
+                badgeLive.textContent = 'Active';
+                badgeSoon1.textContent = 'Soon';
+                badgeSoon2.textContent = 'Soon';
+
+                g1Title.textContent = 'Pidiotic Table';
+                g1Desc.textContent = 'An interactive chemistry study module featuring element nomenclature testing, audio pronunciations, and mixed identification systems.';
+                g1Btn.textContent = 'Enter →';
+
+                g2Title.textContent = 'Workload & Tasks';
+                g2Desc.textContent = 'A centralized tracker for academic assignments, research workloads, and upcoming project deadlines.';
+                g2Btn.textContent = 'Locked';
+
+                g3Title.textContent = 'Activities';
+                g3Desc.textContent = 'A log documenting institutional events, academic certificates, seminars, and extracurricular portfolios.';
+                g3Btn.textContent = 'Locked';
             }
-            
-            speakBtn.textContent = '🔊 Speak';
-            
-            if (currentElement && revealed) {
-                nameEl.textContent = isThai ? currentElement.name : currentElement.enName;
-                numberEl.textContent = isThai ? `เลขอะตอม: ${currentElement.number}` : `Atomic Number: ${currentElement.number}`;
-            }
-            updateStats();
         }
 
-        // Event Listeners
-        actionBtn.addEventListener('click', handleActionClick);
-        speakBtn.addEventListener('click', speakName);
         langBtn.addEventListener('click', toggleLanguage);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-                e.preventDefault(); 
-                handleActionClick();
-            }
-            if (e.key.toLowerCase() === 's' && revealed) speakName();
-        });
-
-        // Start
-        loadNewElement();
-        updateStats();
     </script>
 </body>
 </html>
