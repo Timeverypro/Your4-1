@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room 4/1 | Student Login</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e2937);
+            color: #e2e8f0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #1e2937;
+            border: 2px solid #334155;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            position: relative;
+        }
+
+        .lang-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-toggle {
+            background: #334155;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+            font-weight: 600;
+        }
+
+        .logo-placeholder {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #60a5fa;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 15px;
+            margin: 0 0 30px 0;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: #2563eb;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* Unregistered Guest Styles */
+        .unregister-box {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+        }
+
+        .guest-link {
+            color: #94a3b8;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: inline-block;
+        }
+
+        .guest-link strong {
+            color: #a855f7;
+            text-decoration: underline;
+        }
+
+        .guest-link:hover {
+            color: #e2e8f0;
+        }
+
+        .guest-link:hover strong {
+            color: #c084fc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="lang-container">
+            <button class="lang-toggle" id="lang-btn">ภาษาไทย</button>
+        </div>
+
+        <div class="logo-placeholder">🔑</div>
+        <h2 id="login-title">Student Portal</h2>
+        <p id="login-desc">Enter your Student ID to access the dashboard</p>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label id="label-id" for="student-id">Student ID</label>
+                <input type="text" id="student-id" placeholder="" required autocomplete="off">
+            </div>
+            <button type="submit" class="btn-login" id="btn-text">Sign In</button>
+        </form>
+
+        <div class="error-msg" id="error-box">Invalid Student ID. Please try again.</div>
+
+        <div class="unregister-box">
+            <a onclick="loginAsGuest()" class="guest-link" id="guest-text">
+                Not a member of 4/1? <strong>Access as Unregistered Guest</strong>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const students = [
+            { id: "13985", name: "นายกฤดิธฤต ยมคุปต์" },
+            { id: "13986", name: "นายกฤษณกันท์ จันทนา" },
+            { id: "13946", name: "นายจิติราชย์ ขวัญศรี" },
+            { id: "13835", name: "นายฉัตรมงคล ช่วยขาว" },
+            { id: "13837", name: "นายเตชิต เนียมศรี" },
+            { id: "13838", name: "นายปัณณ์เทพ มิฉา" },
+            { id: "15334", name: "นายภัทรพล อินทรวิเชียร" },
+            { id: "13914", name: "นายรณวิทย์ เสนา" },
+            { id: "13958", name: "นายศดิต จันทร์ทอง" },
+            { id: "13843", name: "นางสาวกัญญ์ณัชชา พลพิชัย" },
+            { id: "13883", name: "นางสาวกัญญาณัฐ เทียนแก้ว" },
+            { id: "13966", name: "นางสาวกานต์ธิดา คงเลิศ" },
+            { id: "13844", name: "นางสาวเกวลิน ชัยนาคิน" },
+            { id: "13845", name: "นางสาวจิราพร ขำเกิด" },
+            { id: "13849", name: "นางสาวธนภรณ์ ช่วยบรรจง" },
+            { id: "13854", name: "นางสาวนันท์นภัส จึงงดงาม" },
+            { id: "14015", name: "นางสาวบัณฑิตา มาศเส" },
+            { id: "13856", name: "นางสาวพิมพ์มาดา ร่วมพันธ์" },
+            { id: "13857", name: "นางสาวเพ็ญพิชญา นาคเสน" },
+            { id: "13858", name: "นางสาวภัทราพร เกตุกุล" },
+            { id: "13977", name: "นางสาวลลนา เหง่าศรี" },
+            { id: "13861", name: "นางสาววารินทิพย์ แก้วพิพัฒน์" },
+            { id: "13940", name: "นางสาวสลิษา เงินเลี่ยม" },
+            { id: "13862", name: "นางสาวอันดามณี ชูอนนท์" }
+        ];
+
+        let isThai = false;
+        const langBtn = document.getElementById('lang-btn');
+        const loginTitle = document.getElementById('login-title');
+        const loginDesc = document.getElementById('login-desc');
+        const labelId = document.getElementById('label-id');
+        const btnText = document.getElementById('btn-text');
+        const errorBox = document.getElementById('error-box');
+        const guestText = document.getElementById('guest-text');
+
+        langBtn.addEventListener('click', () => {
+            isThai = !isThai;
+            langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
+            if (isThai) {
+                loginTitle.textContent = 'เข้าสู่ระบบนักเรียน';
+                loginDesc.textContent = 'กรอกเลขประจำตัวนักเรียนของคุณเพื่อเข้าใช้งานแดชบอร์ด';
+                labelId.textContent = 'เลขประจำตัวนักเรียน';
+                btnText.textContent = 'เข้าสู่ระบบ';
+                guestText.innerHTML = 'ไม่ได้อยู่ห้อง ม.4/1 ใช่ไหม? <strong>เข้าใช้งานในฐานะผู้เยี่ยมชม</strong>';
+            } else {
+                loginTitle.textContent = 'Student Portal';
+                loginDesc.textContent = 'Enter your Student ID to access the dashboard';
+                labelId.textContent = 'Student ID';
+                btnText.textContent = 'Sign In';
+                guestText.innerHTML = 'Not a member of 4/1? <strong>Access as Unregistered Guest</strong>';
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputID = document.getElementById('student-id').value.trim();
+            const foundStudent = students.find(student => student.id === inputID);
+
+            if (foundStudent) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('studentId', foundStudent.id);
+                localStorage.setItem('studentName', foundStudent.name);
+                window.location.href = 'index.html';
+            } else {
+                errorBox.style.display = 'block';
+                errorBox.textContent = isThai ? 'ไม่พบเลขประจำตัวนี้ กรุณาลองใหม่อีกครั้ง' : 'Invalid Student ID. Please try again.';
+            }
+        });
+
+        // Instant access logic for unregistered dashboard visitors
+        function loginAsGuest() {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('studentId', 'GUEST');
+            localStorage.setItem('studentName', isThai ? 'ผู้เยี่ยมชม (Guest)' : 'Guest Account');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

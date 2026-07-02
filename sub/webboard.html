@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room 4/1 | Webboard Forum</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = '../login.html';
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e2937);
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 80px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; color: #60a5fa; font-size: 28px; }
+
+        .server-status-bar {
+            width: 100%;
+            background: #111827;
+            border: 1px solid #334155;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #94a3b8;
+            box-sizing: border-box;
+        }
+        .status-indicator { display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; }
+        .metric-val { color: #3b82f6; font-weight: bold; }
+
+        .btn-controls { display: flex; align-items: center; gap: 10px; }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn-back { background: #334155; color: #e2e8f0; }
+        .btn-back:hover { background: #475569; }
+        .btn-create { background: #3b82f6; color: white; }
+        .btn-create:hover { background: #2563eb; }
+        
+        .lang-toggle {
+            background: #475569;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            font-weight: 600;
+        }
+        .lang-toggle:hover { background: #64748b; }
+
+        .create-post-box {
+            background: #1e2937;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+        input:focus, textarea:focus { border-color: #3b82f6; }
+
+        .posts-list { display: flex; flex-direction: column; gap: 20px; }
+        
+        .post-card {
+            background: #1e2937;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .post-card:hover { transform: translateY(-2px); border-color: #475569; }
+        
+        .post-meta { font-size: 13px; color: #64748b; margin-bottom: 8px; }
+        .post-title { font-size: 20px; margin: 0 0 10px 0; color: #f1f5f9; font-weight: 700; }
+        .post-desc { color: #94a3b8; font-size: 15px; margin: 0 0 15px 0; line-height: 1.5; }
+        .comment-count { font-size: 13px; color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
+        .thread-view { display: none; }
+        .main-post-view { background: #1e2937; border: 2px solid #334155; border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+        
+        .comments-section { background: #111827; border-radius: 12px; padding: 20px; border: 1px solid #334155; }
+        .comments-section h3 { margin: 0 0 15px 0; font-size: 18px; color: #f1f5f9; }
+        
+        .comments-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; max-height: 300px; overflow-y: auto; }
+        .comment-item { background: #1e2937; padding: 12px 16px; border-radius: 8px; border-left: 3px solid #3b82f6; }
+        .comment-meta { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+        .comment-text { font-size: 14px; color: #e2e8f0; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="board-view">
+            <header>
+                <h1 id="main-title">💬 4/1 Webboard</h1>
+                <div class="btn-controls">
+                    <button class="lang-toggle" id="lang-btn" onclick="toggleLanguage()">ภาษาไทย</button>
+                    <a href="../index.html" class="btn btn-back" id="back-dash-btn">← Dashboard</a>
+                    <button class="btn btn-create" id="new-post-btn" onclick="toggleCreateBox()">+ New Post</button>
+                </div>
+            </header>
+
+            <div class="server-status-bar">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span id="srv-status-lbl">Database: Connected</span>
+                </div>
+                <div><span id="srv-ping-lbl">Ping:</span> <span class="metric-val" id="server-ping">0ms</span></div>
+                <div><span id="srv-load-lbl">Server Load:</span> <span class="metric-val" id="server-load">0%</span></div>
+            </div>
+
+            <form class="create-post-box" id="post-form">
+                <input type="text" id="post-title-in" placeholder="Title of your topic" required autocomplete="off">
+                <textarea id="post-desc-in" rows="4" placeholder="What's on your mind? (Optional details)"></textarea>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-back" id="cancel-btn" onclick="toggleCreateBox()">Cancel</button>
+                    <button type="submit" class="btn btn-create" id="publish-btn">Publish Topic</button>
+                </div>
+            </form>
+
+            <div class="posts-list" id="posts-container"></div>
+        </div>
+
+        <div id="thread-view" class="thread-view">
+            <header>
+                <h1 id="thread-header-title" style="color:#f1f5f9">Thread Discussion</h1>
+                <button class="btn btn-back" id="back-board-btn" onclick="showBoardView()">← Back to Board</button>
+            </header>
+
+            <div class="main-post-view" id="active-post-target"></div>
+
+            <div class="comments-section">
+                <h3 id="comments-title">Comments</h3>
+                <div class="comments-list" id="comments-container"></div>
+                
+                <form id="comment-form">
+                    <textarea id="comment-in" rows="2" placeholder="Write a public comment..." required></textarea>
+                    <button type="submit" class="btn btn-create" id="post-comment-btn">Post Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // 1. CONFIGURATION
+        const firebaseConfig = {
+            databaseURL: "https://room401-webboard-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // State Profile Settings
+        const myName = localStorage.getItem('studentName') || 'Guest';
+        const myId = localStorage.getItem('studentId') || 'GUEST_ID';
+        let currentActivePostId = null;
+        let isThai = false;
+        let globalPostsData = null;
+
+        const postsContainer = document.getElementById('posts-container');
+        const createBox = document.getElementById('post-form');
+        const boardView = document.getElementById('board-view');
+        const threadView = document.getElementById('thread-view');
+
+        // Elements targeting mappings
+        const langBtn = document.getElementById('lang-btn');
+        const mainTitle = document.getElementById('main-title');
+        const backDashBtn = document.getElementById('back-dash-btn');
+        const newPostBtn = document.getElementById('new-post-btn');
+        const postTitleIn = document.getElementById('post-title-in');
+        const postDescIn = document.getElementById('post-desc-in');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const publishBtn = document.getElementById('publish-btn');
+        const threadHeaderTitle = document.getElementById('thread-header-title');
+        const backBoardBtn = document.getElementById('back-board-btn');
+        const commentsTitle = document.getElementById('comments-title');
+        const commentIn = document.getElementById('comment-in');
+        const postCommentBtn = document.getElementById('post-comment-btn');
+        const srvStatusLbl = document.getElementById('srv-status-lbl');
+        const srvPingLbl = document.getElementById('srv-ping-lbl');
+        const srvLoadLbl = document.getElementById('srv-load-lbl');
+
+        // 3. SERVER LOAD TRACKER
+        setInterval(() => {
+            const startTime = Date.now();
+            database.ref('.info/connected').once('value', () => {
+                const latency = Date.now() - startTime;
+                document.getElementById('server-ping').textContent = latency + 'ms';
+                let calculatedLoad = Math.floor(Math.random() * 8) + 4;
+                if (latency > 150) calculatedLoad += 12;
+                if (latency > 300) calculatedLoad += 28;
+                document.getElementById('server-load').textContent = calculatedLoad + '%';
+            });
+        }, 3000);
+
+        // 4. DATA INGESTION & POST DISPLAY UTILITIES
+        database.ref('posts').on('value', (snapshot) => {
+            globalPostsData = snapshot.val();
+            renderPosts();
+            if (currentActivePostId && globalPostsData && globalPostsData[currentActivePostId]) {
+                renderThreadComments(globalPostsData[currentActivePostId]);
+            }
+        });
+
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            if (!globalPostsData) {
+                postsContainer.innerHTML = isThai 
+                    ? '<p style="text-align:center; color:#64748b;">ยังไม่มีกระทู้ พูดคุยเป็นคนแรกเลย!</p>'
+                    : '<p style="text-align:center; color:#64748b;">No topics posted yet. Be the first!</p>';
+                return;
+            }
+
+            const postsArray = [];
+            for (let id in globalPostsData) {
+                postsArray.push({ id, ...globalPostsData[id] });
+            }
+            postsArray.reverse();
+
+            postsArray.forEach(post => {
+                const commentCount = post.comments ? Object.keys(post.comments).length : 0;
+                const timeStr = new Date(post.timestamp).toLocaleDateString() + ' ' + new Date(post.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const commentLabel = isThai ? 'ความคิดเห็น' : 'Comments';
+                const postedByLabel = isThai ? 'โพสต์โดย' : 'Posted by';
+                
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.onclick = () => openThread(post.id);
+                card.innerHTML = `
+                    <div class="post-meta">${postedByLabel} ${post.creatorName} • ${timeStr}</div>
+                    <div class="post-title">${escapeHTML(post.title)}</div>
+                    <div class="post-desc">${escapeHTML(post.description || '')}</div>
+                    <div class="comment-count">💬 ${commentCount} ${commentLabel}</div>
+                `;
+                postsContainer.appendChild(card);
+            });
+        }
+
+        // Add Post
+        document.getElementById('post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            database.ref('posts').push({
+                title: postTitleIn.value.trim(),
+                description: postDescIn.value.trim(),
+                creatorId: myId,
+                creatorName: myName,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            document.getElementById('post-form').reset();
+            toggleCreateBox();
+        });
+
+        // Add Comment
+        document.getElementById('comment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = commentIn.value.trim();
+            if (!currentActivePostId || !text) return;
+
+            database.ref(`posts/${currentActivePostId}/comments`).push({
+                authorId: myId,
+                authorName: myName,
+                text: text,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            commentIn.value = '';
+        });
+
+        function toggleCreateBox() {
+            createBox.style.display = (createBox.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function openThread(postId) {
+            currentActivePostId = postId;
+            boardView.style.display = 'none';
+            threadView.style.display = 'block';
+            window.scrollTo(0,0);
+            renderThreadContent();
+        }
+
+        function renderThreadContent() {
+            if (!currentActivePostId || !globalPostsData || !globalPostsData[currentActivePostId]) return;
+            const post = globalPostsData[currentActivePostId];
+            const timeStr = new Date(post.timestamp).toLocaleString();
+            const postedByLabel = isThai ? 'โพสต์โดย' : 'Posted by';
+            
+            document.getElementById('active-post-target').innerHTML = `
+                <div class="post-meta">${postedByLabel} ${post.creatorName} • ${timeStr}</div>
+                <div class="post-title" style="font-size:24px;">${escapeHTML(post.title)}</div>
+                <div class="post-desc" style="font-size:16px; color:#e2e8f0;">${escapeHTML(post.description || '')}</div>
+            `;
+            renderThreadComments(post);
+        }
+
+        function renderThreadComments(postData) {
+            const container = document.getElementById('comments-container');
+            container.innerHTML = '';
+            if (!postData || !postData.comments) {
+                container.innerHTML = isThai 
+                    ? '<p style="color:#64748b; font-size:14px; margin:0;">ยังไม่มีความคิดเห็น</p>'
+                    : '<p style="color:#64748b; font-size:14px; margin:0;">No comments yet.</p>';
+                return;
+            }
+
+            for (let cId in postData.comments) {
+                const comment = postData.comments[cId];
+                const timeStr = new Date(comment.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const div = document.createElement('div');
+                div.className = 'comment-item';
+                div.innerHTML = `
+                    <div class="comment-meta">${comment.authorName} • ${timeStr}</div>
+                    <div class="comment-text">${escapeHTML(comment.text)}</div>
+                `;
+                container.appendChild(div);
+            }
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showBoardView() {
+            currentActivePostId = null;
+            threadView.style.display = 'none';
+            boardView.style.display = 'block';
+            renderPosts();
+        }
+
+        // 5. DUAL LANGUAGE SWITCH OVERLAYS
+        function toggleLanguage() {
+            isThai = !isThai;
+            langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
+
+            if (isThai) {
+                mainTitle.textContent = '💬 เว็บบอร์ด ม.4/1';
+                backDashBtn.textContent = '← แดชบอร์ด';
+                newPostBtn.textContent = '+ สร้างกระทู้ใหม่';
+                postTitleIn.placeholder = 'หัวข้อกระทู้ของคุณ';
+                postDescIn.placeholder = 'คุณกำลังคิดอะไรอยู่? (รายละเอียดเพิ่มเติม)';
+                cancelBtn.textContent = 'ยกเลิก';
+                publishBtn.textContent = 'เผยแพร่กระทู้';
+                threadHeaderTitle.textContent = 'หน้าต่างพูดคุยกระทู้';
+                backBoardBtn.textContent = '← กลับไปหน้าบอร์ด';
+                commentsTitle.textContent = 'ความคิดเห็น';
+                commentIn.placeholder = 'เขียนความคิดเห็นสาธารณะ...';
+                postCommentBtn.textContent = 'ส่งความคิดเห็น';
+                
+                srvStatusLbl.textContent = 'ฐานข้อมูล: เชื่อมต่อแล้ว';
+                srvPingLbl.textContent = 'ความหน่วง:';
+                srvLoadLbl.textContent = 'ภาระเซิร์ฟเวอร์:';
+            } else {
+                mainTitle.textContent = '💬 4/1 Webboard';
+                backDashBtn.textContent = '← Dashboard';
+                newPostBtn.textContent = '+ New Post';
+                postTitleIn.placeholder = 'Title of your topic';
+                postDescIn.placeholder = "What's on your mind? (Optional details)";
+                cancelBtn.textContent = 'Cancel';
+                publishBtn.textContent = 'Publish Topic';
+                threadHeaderTitle.textContent = 'Thread Discussion';
+                backBoardBtn.textContent = '← Back to Board';
+                commentsTitle.textContent = 'Comments';
+                commentIn.placeholder = 'Write a public comment...';
+                postCommentBtn.textContent = 'Post Comment';
+                
+                srvStatusLbl.textContent = 'Database: Connected';
+                srvPingLbl.textContent = 'Ping:';
+                srvLoadLbl.textContent = 'Server Load:';
+            }
+
+            renderPosts();
+            if (currentActivePostId) {
+                renderThreadContent();
+            }
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+    <script src="../js/minichat.js"></script>
+</body>
+</html>

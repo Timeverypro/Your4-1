@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room 4/1 | Games Hub</title>
+    <link class="icon" type="image/png" href="../images/logo.png">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e2937);
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background: #1e2937;
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-back:hover {
+            color: #f1f5f9;
+            border-color: #475569;
+            background: #334155;
+        }
+
+        .lang-toggle {
+            background: #334155;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .lang-toggle:hover {
+            background: #475569;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+        .hero h1 {
+            font-size: 36px;
+            color: #a855f7;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+        .hero p {
+            font-size: 16px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card {
+            background: #1e2937;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #a855f7;
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            color: #f1f5f9;
+        }
+        .card p {
+            margin: 0 0 25px 0;
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .btn-game {
+            background: #a855f7;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-game:hover {
+            background: #9333ea;
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            background: #22c55e;
+            color: white;
+        }
+
+        footer {
+            width: 100%;
+            max-width: 900px;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .credits {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .credits strong {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="btn-back" id="btn-back">← Dashboard</a>
+        <button class="lang-toggle" id="lang-btn">ภาษาไทย</button>
+    </header>
+
+    <div class="hero">
+        <h1 id="hero-title">Games Hub</h1>
+        <p id="hero-desc">Interactive mini-games and educational challenges for Room 4/1</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <span class="badge">Chemistry</span>
+            <div class="card-icon">🧪</div>
+            <h3 id="g1-title">Periodic Table Game</h3>
+            <p id="g1-desc">Test your chemical element knowledge and symbols alignment in this fun puzzle match challenge.</p>
+            <a href="pidiotic-table.html" class="btn btn-game" id="g1-btn">Launch Game 🎮</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="credits" id="footer-credits">
+            Website by <strong>Jitirat Kwansri</strong>
+        </div>
+    </footer>
+
+    <script>
+        let isThai = false;
+
+        const langBtn = document.getElementById('lang-btn');
+        const btnBack = document.getElementById('btn-back');
+        const heroTitle = document.getElementById('hero-title');
+        const heroDesc = document.getElementById('hero-desc');
+        const footerCredits = document.getElementById('footer-credits');
+
+        const g1Title = document.getElementById('g1-title');
+        const g1Desc = document.getElementById('g1-desc');
+        const g1Btn = document.getElementById('g1-btn');
+
+        function toggleLanguage() {
+            isThai = !isThai;
+            langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
+
+            if (isThai) {
+                btnBack.textContent = '← กลับไปยังแดชบอร์ด';
+                heroTitle.textContent = 'ศูนย์รวมเกมสนุก ๆ';
+                heroDesc.textContent = 'มินิเกมเชิงโต้ตอบและความท้าทายด้านการศึกษาสำหรับห้อง ม.4/1';
+                footerCredits.innerHTML = 'เว็บไซต์โดย <strong>จิติราชย์ ขวัญศรี</strong>';
+                
+                g1Title.textContent = 'เกมตารางธาตุ';
+                g1Desc.textContent = 'ทดสอบความรู้และสัญลักษณ์ของธาตุเคมีต่าง ๆ ในเกมจับคู่ปริศนาแสนสนุก';
+                g1Btn.textContent = 'เริ่มเล่นเกม 🎮';
+            } else {
+                btnBack.textContent = '← Dashboard';
+                heroTitle.textContent = 'Games Hub';
+                heroDesc.textContent = 'Interactive mini-games and educational challenges for Room 4/1';
+                footerCredits.innerHTML = 'Website by <strong>Jitirat Kwansri</strong>';
+                
+                g1Title.textContent = 'Periodic Table Game';
+                g1Desc.textContent = 'Test your chemical element knowledge and symbols alignment in this fun puzzle match challenge.';
+                g1Btn.textContent = 'Launch Game 🎮';
+            }
+        }
+
+        langBtn.addEventListener('click', toggleLanguage);
+    </script>
+    <script src="../js/minichat.js"></script>
+</body>
+</html>

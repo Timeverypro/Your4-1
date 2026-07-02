@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jitirat Khwansri | Room 4/1 Hub</title>
+    <title>Your 4/1 Hub</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
@@ -28,13 +36,42 @@
             border-bottom: 1px solid #334155;
             padding-bottom: 20px;
         }
-        .credits {
-            font-size: 16px;
-            color: #94a3b8;
-            font-weight: 500;
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .credits strong {
-            color: #3b82f6;
+
+        .welcome-txt {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .welcome-txt strong {
+            color: #60a5fa;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .right-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .lang-toggle {
@@ -56,6 +93,9 @@
             text-align: center;
             max-width: 600px;
             margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .hero h1 {
             font-size: 48px;
@@ -68,7 +108,27 @@
             font-size: 18px;
             color: #64748b;
             line-height: 1.6;
-            margin: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .btn-roster-link {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-roster-link:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            transform: translateY(-1px);
         }
 
         .grid {
@@ -77,6 +137,7 @@
             gap: 25px;
             width: 100%;
             max-width: 900px;
+            flex-grow: 1;
         }
 
         .card {
@@ -99,6 +160,11 @@
         .card.active-project {
             border-color: #3b82f6;
             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+        }
+
+        .card.active-game-section {
+            border-color: #a855f7;
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
         }
 
         .card-icon {
@@ -133,19 +199,30 @@
         .btn-primary {
             background: #3b82f6;
             color: white;
+            cursor: pointer;
         }
         .btn-primary:hover {
             background: #2563eb;
             transform: scale(1.02);
         }
+
+        .btn-game {
+            background: #a855f7;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-game:hover {
+            background: #9333ea;
+            transform: scale(1.02);
+        }
         
         .card.future-project {
-            opacity: 0.6;
+            opacity: 0.7;
             border-style: dashed;
             background: rgba(30, 41, 59, 0.5);
         }
         .card.future-project:hover {
-            opacity: 0.8;
+            opacity: 0.9;
         }
         .btn-secondary {
             background: #334155;
@@ -165,30 +242,60 @@
             letter-spacing: 0.5px;
         }
         .badge-live { background: #22c55e; color: white; }
+        .badge-game { background: #a855f7; color: white; }
         .badge-soon { background: #64748b; color: #cbd5e1; }
+
+        footer {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 60px;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .credits {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .credits strong {
+            color: #3b82f6;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="credits" id="header-credits">
-            Website by <strong>Jitirat Kwansri</strong>
+        <div class="user-panel">
+            <span class="welcome-txt" id="welcome-msg">Student: <strong id="username-display">Loading...</strong></span>
+            <button class="btn-logout" id="logout-btn">Logout</button>
         </div>
-        <button class="lang-toggle" id="lang-btn">ภาษาไทย</button>
+        <div class="right-header">
+            <button class="lang-toggle" id="lang-btn">ภาษาไทย</button>
+        </div>
     </header>
 
     <div class="hero">
         <h1 id="hero-title">Your 4/1</h1>
         <p id="hero-desc">Welcome to your classroom dashboard. Access active educational modules, review workloads, or browse upcoming academic logs below.</p>
+        <a href="sub/members.html" class="btn-roster-link" id="roster-link-btn">👥 View Class Members</a>
     </div>
 
     <div class="grid">
         <div class="card active-project">
-            <span class="badge badge-live" id="badge-live">Active</span>
-            <div class="card-icon">🧪</div>
-            <h3 id="g1-title">Pidiotic Table</h3>
-            <p id="g1-desc">An interactive chemistry study module featuring element nomenclature testing, audio pronunciations, and mixed identification systems.</p>
-            <a href="sub/pidiotic-table.html" class="btn btn-primary" id="g1-btn">Enter →</a>
+            <span class="badge badge-live" id="badge-live-2">Active</span>
+            <div class="card-icon">💬</div>
+            <h3 id="webboard-title">Webboard</h3>
+            <p id="webboard-desc">Join room discussions, share news, post classroom updates, or chat with classmates.</p>
+            <a href="sub/webboard.html" class="btn btn-primary" id="webboard-btn">Enter Webboard →</a>
+        </div>
+
+        <div class="card active-game-section">
+            <span class="badge badge-game" id="game-badge">Games</span>
+            <div class="card-icon">🎮</div>
+            <h3 id="game-title">Fun Games</h3>
+            <p id="game-desc">Step into the classroom arcade. Explore fun educational games including the Periodic Table challenge.</p>
+            <a href="sub/games.html" class="btn btn-game" id="game-btn">Enter Games Hub →</a>
         </div>
 
         <div class="card future-project">
@@ -206,23 +313,49 @@
             <p id="g3-desc">A log documenting institutional events, academic certificates, seminars, and extracurricular portfolios.</p>
             <button class="btn btn-secondary" id="g3-btn" disabled>Locked</button>
         </div>
+
+        <div class="card future-project">
+            <span class="badge badge-soon" id="portfolio-badge">Soon</span>
+            <div class="card-icon">📁</div>
+            <h3 id="portfolio-title">Portfolio</h3>
+            <p id="portfolio-desc">Showcase section featuring collective classroom achievements, outstanding projects, and student works.</p>
+            <button class="btn btn-secondary" id="portfolio-btn" disabled>Locked</button>
+        </div>
     </div>
 
+    <footer>
+        <div class="credits" id="footer-credits">
+            Website by <strong>Jitirat Kwansri</strong>
+        </div>
+    </footer>
+
     <script>
+        const currentStudentName = localStorage.getItem('studentName') || 'Guest';
+        document.getElementById('username-display').textContent = currentStudentName;
+
         let isThai = false;
 
         const langBtn = document.getElementById('lang-btn');
-        const headerCredits = document.getElementById('header-credits');
+        const logoutBtn = document.getElementById('logout-btn');
+        const welcomeMsg = document.getElementById('welcome-msg');
+        const footerCredits = document.getElementById('footer-credits');
         const heroTitle = document.getElementById('hero-title');
         const heroDesc = document.getElementById('hero-desc');
+        const rosterLinkBtn = document.getElementById('roster-link-btn');
         
-        const badgeLive = document.getElementById('badge-live');
+        const badgeLive2 = document.getElementById('badge-live-2');
+        const gameBadge = document.getElementById('game-badge');
         const badgeSoon1 = document.getElementById('badge-soon-1');
         const badgeSoon2 = document.getElementById('badge-soon-2');
-        
-        const g1Title = document.getElementById('g1-title');
-        const g1Desc = document.getElementById('g1-desc');
-        const g1Btn = document.getElementById('g1-btn');
+        const portfolioBadge = document.getElementById('portfolio-badge');
+
+        const webboardTitle = document.getElementById('webboard-title');
+        const webboardDesc = document.getElementById('webboard-desc');
+        const webboardBtn = document.getElementById('webboard-btn');
+
+        const gameTitle = document.getElementById('game-title');
+        const gameDesc = document.getElementById('game-desc');
+        const gameBtn = document.getElementById('game-btn');
 
         const g2Title = document.getElementById('g2-title');
         const g2Desc = document.getElementById('g2-desc');
@@ -232,22 +365,40 @@
         const g3Desc = document.getElementById('g3-desc');
         const g3Btn = document.getElementById('g3-btn');
 
+        const portfolioTitle = document.getElementById('portfolio-title');
+        const portfolioDesc = document.getElementById('portfolio-desc');
+        const portfolioBtn = document.getElementById('portfolio-btn');
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
         function toggleLanguage() {
             isThai = !isThai;
             langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
 
             if (isThai) {
-                headerCredits.innerHTML = 'เว็บไซต์โดย <strong>จิติราชย์ ขวัญศรี</strong>';
+                welcomeMsg.innerHTML = `นักเรียน: <strong id="username-display">${currentStudentName}</strong>`;
+                logoutBtn.textContent = 'ออกจากระบบ';
+                footerCredits.innerHTML = 'เว็บไซต์โดย <strong>จิติราชย์ ขวัญศรี</strong>';
                 heroTitle.textContent = 'ห้อง ม.4/1 ของคุณ';
                 heroDesc.textContent = 'ยินดีต้อนรับสู่แดชบอร์ดประจำห้องเรียนของคุณ เข้าสู่บทเรียนวิชาเคมี ตรวจสอบภาระงานสะสม หรือดูบันทึกกิจกรรมต่าง ๆ ด้านล่างนี้';
+                rosterLinkBtn.textContent = '👥 ดูรายชื่อสมาชิกในห้อง';
                 
-                badgeLive.textContent = 'เปิดใช้งาน';
+                badgeLive2.textContent = 'เปิดใช้งาน';
+                gameBadge.textContent = 'เกมสนุก ๆ';
                 badgeSoon1.textContent = 'เร็วๆ นี้';
                 badgeSoon2.textContent = 'เร็วๆ นี้';
+                portfolioBadge.textContent = 'เร็วๆ นี้';
 
-                g1Title.textContent = 'ตารางธาตุบ้า ๆ';
-                g1Desc.textContent = 'ระบบทบทวนบทเรียนเรื่องธาตุเคมี มาพร้อมฟังก์ชันฝึกประมวลความรู้ การสลับโหมดคำถาม และระบบช่วยออกเสียงสำเนียงสากล';
-                g1Btn.textContent = 'เข้าสู่เนื้อหา →';
+                webboardTitle.textContent = 'เว็บบอร์ด';
+                webboardDesc.textContent = 'พื้นที่พูดคุย แลกเปลี่ยนข้อมูลข่าวสารภายในห้องเรียน ประกาศแจ้งเตือน หรือพูดคุยสัพเพเหระกับเพื่อนๆ';
+                webboardBtn.textContent = 'เข้าสู่เว็บบอร์ด →';
+
+                gameTitle.textContent = 'เกมสนุก ๆ';
+                gameDesc.textContent = 'เข้าสู่ศูนย์รวมเกมจำลองของห้องเรียน สนุกไปกับมินิเกมฝึกสมองต่างๆ รวมถึงเกมทายตารางธาตุวิชาเคมี';
+                gameBtn.textContent = 'เข้าสู่หน้าเกม →';
 
                 g2Title.textContent = 'ภาระงาน';
                 g2Desc.textContent = 'ระบบบันทึกและติดตามภาระงาน รายการการบ้าน รายงาน และกำหนดการส่งงานวิชาการต่าง ๆ เพื่อความเป็นระเบียบ';
@@ -256,18 +407,31 @@
                 g3Title.textContent = 'กิจกรรม';
                 g3Desc.textContent = 'บันทึกประวัติการเข้าร่วมกิจกรรมพิเศษ งานสัมมนา ค่ายวิชาการ และแฟ้มสะสมผลงานส่วนบุคคล';
                 g3Btn.textContent = 'ถูกล็อกไว้';
+
+                portfolioTitle.textContent = 'ผลงาน';
+                portfolioDesc.textContent = 'พื้นที่จัดแสดงผลงานเด่น โครงงานวิชาการชิ้นเยี่ยม และความสำเร็จต่าง ๆ ของนักเรียนในห้องเรียน';
+                portfolioBtn.textContent = 'ถูกล็อกไว้';
             } else {
-                headerCredits.innerHTML = 'Website by <strong>Jitirat Kwansri</strong>';
+                welcomeMsg.innerHTML = `Student: <strong id="username-display">${currentStudentName}</strong>`;
+                logoutBtn.textContent = 'Logout';
+                footerCredits.innerHTML = 'Website by <strong>Jitirat Kwansri</strong>';
                 heroTitle.textContent = 'Your 4/1';
                 heroDesc.textContent = 'Welcome to your classroom dashboard. Access active educational modules, review workloads, or browse upcoming academic logs below.';
+                rosterLinkBtn.textContent = '👥 View Class Members';
                 
-                badgeLive.textContent = 'Active';
+                badgeLive2.textContent = 'Active';
+                gameBadge.textContent = 'Games';
                 badgeSoon1.textContent = 'Soon';
                 badgeSoon2.textContent = 'Soon';
+                portfolioBadge.textContent = 'Soon';
 
-                g1Title.textContent = 'Pidiotic Table';
-                g1Desc.textContent = 'An interactive chemistry study module featuring element nomenclature testing, audio pronunciations, and mixed identification systems.';
-                g1Btn.textContent = 'Enter →';
+                webboardTitle.textContent = 'Webboard';
+                webboardDesc.textContent = 'Join room discussions, share news, post classroom updates, or chat with classmates.';
+                webboardBtn.textContent = 'Enter Webboard →';
+
+                gameTitle.textContent = 'Fun Games';
+                gameDesc.textContent = 'Step into the classroom arcade. Explore fun educational games including the Periodic Table challenge.';
+                gameBtn.textContent = 'Enter Games Hub →';
 
                 g2Title.textContent = 'Workload & Tasks';
                 g2Desc.textContent = 'A centralized tracker for academic assignments, research workloads, and upcoming project deadlines.';
@@ -276,10 +440,15 @@
                 g3Title.textContent = 'Activities';
                 g3Desc.textContent = 'A log documenting institutional events, academic certificates, seminars, and extracurricular portfolios.';
                 g3Btn.textContent = 'Locked';
+
+                portfolioTitle.textContent = 'Portfolio';
+                portfolioDesc.textContent = 'Showcase section featuring collective classroom achievements, outstanding projects, and student works.';
+                portfolioBtn.textContent = 'Locked';
             }
         }
 
         langBtn.addEventListener('click', toggleLanguage);
     </script>
+    <script src="./js/minichat.js"></script>
 </body>
 </html>
