@@ -167,6 +167,12 @@
             box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
         }
 
+        /* NEW UNLOCKED STATE CARD STYLING */
+        .card.active-task-section {
+            border-color: #10b981;
+            box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3);
+        }
+
         .card-icon {
             font-size: 40px;
             margin-bottom: 15px;
@@ -213,6 +219,17 @@
         }
         .btn-game:hover {
             background: #9333ea;
+            transform: scale(1.02);
+        }
+
+        /* UNLOCKED SUCCESS GREEN CARD SUBMIT ACTIONS */
+        .btn-task {
+            background: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-task:hover {
+            background: #059669;
             transform: scale(1.02);
         }
         
@@ -298,12 +315,12 @@
             <a href="sub/games.html" class="btn btn-game" id="game-btn">Enter Games Hub →</a>
         </div>
 
-        <div class="card future-project">
-            <span class="badge badge-soon" id="badge-soon-1">Soon</span>
+        <div class="card active-task-section">
+            <span class="badge badge-live" id="badge-soon-1">Active</span>
             <div class="card-icon">📋</div>
             <h3 id="g2-title">Workload & Tasks</h3>
             <p id="g2-desc">A centralized tracker for academic assignments, research workloads, and upcoming project deadlines.</p>
-            <button class="btn btn-secondary" id="g2-btn" disabled>Locked</button>
+            <a href="sub/tasks.html" class="btn btn-task" id="g2-btn">Enter Task Board →</a>
         </div>
 
         <div class="card future-project">
@@ -388,7 +405,7 @@
                 
                 badgeLive2.textContent = 'เปิดใช้งาน';
                 gameBadge.textContent = 'เกมสนุก ๆ';
-                badgeSoon1.textContent = 'เร็วๆ นี้';
+                badgeSoon1.textContent = 'เปิดใช้งาน'; // Thai translation updated to represent unlocked state
                 badgeSoon2.textContent = 'เร็วๆ นี้';
                 portfolioBadge.textContent = 'เร็วๆ นี้';
 
@@ -402,7 +419,7 @@
 
                 g2Title.textContent = 'ภาระงาน';
                 g2Desc.textContent = 'ระบบบันทึกและติดตามภาระงาน รายการการบ้าน รายงาน และกำหนดการส่งงานวิชาการต่าง ๆ เพื่อความเป็นระเบียบ';
-                g2Btn.textContent = 'ถูกล็อกไว้';
+                g2Btn.textContent = 'เข้าสู่หน้าภาระงาน →'; // Thai translation button enabled
 
                 g3Title.textContent = 'กิจกรรม';
                 g3Desc.textContent = 'บันทึกประวัติการเข้าร่วมกิจกรรมพิเศษ งานสัมมนา ค่ายวิชาการ และแฟ้มสะสมผลงานส่วนบุคคล';
@@ -421,7 +438,7 @@
                 
                 badgeLive2.textContent = 'Active';
                 gameBadge.textContent = 'Games';
-                badgeSoon1.textContent = 'Soon';
+                badgeSoon1.textContent = 'Active'; // English translation updated to represent unlocked state
                 badgeSoon2.textContent = 'Soon';
                 portfolioBadge.textContent = 'Soon';
 
@@ -435,7 +452,7 @@
 
                 g2Title.textContent = 'Workload & Tasks';
                 g2Desc.textContent = 'A centralized tracker for academic assignments, research workloads, and upcoming project deadlines.';
-                g2Btn.textContent = 'Locked';
+                g2Btn.textContent = 'Enter Task Board →'; // English translation button enabled
 
                 g3Title.textContent = 'Activities';
                 g3Desc.textContent = 'A log documenting institutional events, academic certificates, seminars, and extracurricular portfolios.';

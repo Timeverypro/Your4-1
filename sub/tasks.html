@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room 4/1 | Task Board</title>
+    <link rel="icon" type="image/png" href="../images/logo.png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e2937);
+            color: #e2e8f0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container { width: 100%; max-width: 600px; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 { color: #3b82f6; margin: 0; font-size: 28px; }
+        
+        .controls { display: flex; gap: 10px; align-items: center; }
+        .btn-back {
+            background: #334155;
+            color: #e2e8f0;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background: #475569; }
+
+        .lang-toggle {
+            background: #475569;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            border: none;
+            font-weight: 600;
+        }
+        .lang-toggle:hover { background: #64748b; }
+
+        .task-list { display: flex; flex-direction: column; gap: 15px; }
+        
+        .task-card {
+            background: #1e2937;
+            border: 1px solid #334155;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-title { font-weight: 600; font-size: 16px; color: #f1f5f9; }
+        .task-date { font-size: 13px; color: #64748b; margin-top: 4px; }
+        
+        .right-controls { display: flex; align-items: center; gap: 12px; }
+        .status-tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-urgent { background: #ef4444; color: white; }
+        .status-normal { background: #10b981; color: white; }
+        
+        .btn-info {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-info:hover { background: #64748b; }
+
+        /* MODAL POPUP STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-box {
+            background: #1e2937;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; color: #3b82f6; margin: 0 0 10px 0; }
+        .modal-desc { color: #94a3b8; font-size: 15px; line-height: 1.6; margin-bottom: 20px; white-space: pre-line; }
+        
+        .modal-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .modal-thumbnail {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            background: #0f172a;
+        }
+        .modal-thumbnail:hover {
+            transform: scale(1.05);
+            border-color: #3b82f6;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn-link {
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            display: none;
+        }
+        .btn-link:hover { background: #1d4ed8; }
+
+        .btn-close {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-close:hover { background: #475569; }
+
+        /* LIGHTBOX FOR FULL IMAGE PREVIEW CLICK */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 30000;
+        }
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        
+        /* ADDED CLOSE BUTTON FOR ZOOMED IMAGE */
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            font-size: 35px;
+            font-weight: 300;
+            width: 50px;
+            height: 50px;
+            line-height: 44px;
+            text-align: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            user-select: none;
+        }
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="page-title">📋 Active Tasks</h1>
+            <div class="controls">
+                <button class="lang-toggle" id="lang-btn" onclick="toggleLanguage()">ภาษาไทย</button>
+                <a href="../index.html" class="btn-back" id="back-btn">← Dashboard</a>
+            </div>
+        </header>
+        
+        <div class="task-list" id="task-container">
+            <p id="loading-msg" style="color: #64748b;">Loading active tasks...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="task-modal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <h3 class="modal-title" id="modal-task-title">Task Details</h3>
+            <div class="modal-desc" id="modal-task-desc">Description...</div>
+            
+            <div class="modal-images-grid" id="modal-images-container"></div>
+            
+            <div class="modal-footer">
+                <a href="#" target="_blank" class="btn-link" id="modal-task-link">Open Link</a>
+                <button class="btn-close" id="close-modal-btn" onclick="document.getElementById('task-modal').style.display='none'">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+        <button class="lightbox-close" onclick="document.getElementById('lightbox').style.display='none'">&times;</button>
+        <img class="lightbox-img" id="lightbox-target" src="" alt="Fullscreen view">
+    </div>
+
+    <script>
+        const TXT_FILE_PATH = './tasks.txt'; 
+        let isThai = false;
+        let cachedRawLines = []; 
+
+        async function loadTasksFile() {
+            try {
+                const response = await fetch(TXT_FILE_PATH);
+                if (!response.ok) throw new Error("Could not fetch file");
+                const textData = await response.text();
+                cachedRawLines = textData.split('\n');
+                renderFilteredTasks();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('task-container').innerHTML = isThai 
+                    ? '<p style="color:#ef4444;">ไม่สามารถอ่านข้อมูลรายการภาระงานได้</p>'
+                    : '<p style="color:#ef4444;">Failed to read task manifest updates.</p>';
+            }
+        }
+
+        function renderFilteredTasks() {
+            const container = document.getElementById('task-container');
+            container.innerHTML = ''; 
+            const now = new Date();
+            let parsedTasks = [];
+
+            cachedRawLines.forEach(line => {
+                if (!line.trim() || !line.includes('|||')) return;
+
+                const parts = line.split('|||');
+                if (parts.length < 3) return; 
+
+                const datePart = parts[0].trim();
+                const titleText = parts[1].trim();
+                const descText = parts[2].trim().replace(/\\n/g, '\n'); 
+                const imgFiles = parts[3] ? parts[3].trim() : 'none';
+                const linkUrl = parts[4] ? parts[4].trim() : 'none';
+
+                const dueDate = new Date(datePart);
+                if (isNaN(dueDate.getTime())) return; 
+
+                const hoursPastDue = (now - dueDate) / (1000 * 60 * 60);
+                if (hoursPastDue > 24) return; 
+
+                parsedTasks.push({
+                    dueDate: dueDate, title: titleText, desc: descText, imgs: imgFiles, link: linkUrl
+                });
+            });
+
+            parsedTasks.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+
+            parsedTasks.forEach(task => {
+                const isUrgent = task.dueDate > now && (task.dueDate - now) / (1000 * 60 * 60) < 24;
+                let tagClass = isUrgent ? 'status-urgent' : 'status-normal';
+                let tagText = isThai ? (isUrgent ? 'เร่งด่วน' : 'กำลังดำเนิน') : (isUrgent ? 'Urgent' : 'Active');
+
+                const day = String(task.dueDate.getDate()).padStart(2, '0');
+                const month = String(task.dueDate.getMonth() + 1).padStart(2, '0');
+                const year = task.dueDate.getFullYear();
+                const hours = String(task.dueDate.getHours()).padStart(2, '0');
+                const minutes = String(task.dueDate.getMinutes()).padStart(2, '0');
+                const customFormattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="task-title">${escapeHTML(task.title)}</div>
+                        <div class="task-date">${isThai ? 'กำหนดส่ง' : 'Due'}: ${customFormattedDate}</div>
+                    </div>
+                    <div class="right-controls">
+                        <span class="status-tag ${tagClass}">${tagText}</span>
+                        <button class="btn-info" onclick="openModal('${escapeJS(task.title)}', '${escapeJS(task.desc)}', '${escapeJS(task.imgs)}', '${escapeJS(task.link)}')">Info</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (parsedTasks.length === 0) {
+                container.innerHTML = isThai 
+                    ? '<p style="text-align:center; color:#64748b;">ไม่พบภาระงานที่กำลังดำเนินอยู่!</p>'
+                    : '<p style="text-align:center; color:#64748b;">No active tasks found!</p>';
+            }
+        }
+
+        function toggleLanguage() {
+            isThai = !isThai;
+            const langBtn = document.getElementById('lang-btn');
+            const pageTitle = document.getElementById('page-title');
+            const backBtn = document.getElementById('back-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const linkBtn = document.getElementById('modal-task-link');
+
+            langBtn.textContent = isThai ? 'English' : 'ภาษาไทย';
+            linkBtn.textContent = isThai ? 'เปิดลิงก์งาน ↗' : 'Open Link ↗';
+
+            if (isThai) {
+                pageTitle.textContent = '📋 รายการภาระงาน';
+                backBtn.textContent = '← แดชบอร์ด';
+                closeModalBtn.textContent = 'ปิด';
+            } else {
+                pageTitle.textContent = '📋 Active Tasks';
+                backBtn.textContent = '← Dashboard';
+                closeModalBtn.textContent = 'Close';
+            }
+
+            if (cachedRawLines.length > 0) renderFilteredTasks();
+        }
+
+        function openModal(title, desc, imgsString, link) {
+            document.getElementById('modal-task-title').textContent = title;
+            document.getElementById('modal-task-desc').textContent = desc;
+            
+            const imgContainer = document.getElementById('modal-images-container');
+            imgContainer.innerHTML = ''; 
+
+            if (imgsString && imgsString !== 'none' && imgsString !== '') {
+                const imgList = imgsString.split(','); 
+                imgList.forEach(imgName => {
+                    const cleanName = imgName.trim();
+                    if (!cleanName) return;
+
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'modal-thumbnail';
+                    imgEl.src = `../images/tasks/${cleanName}`;
+                    imgEl.onclick = () => launchLightbox(imgEl.src);
+                    imgContainer.appendChild(imgEl);
+                });
+            }
+
+            const linkBtn = document.getElementById('modal-task-link');
+            if (link && link !== 'none' && link !== '') {
+                linkBtn.href = link;
+                linkBtn.style.display = 'inline-flex';
+            } else {
+                linkBtn.style.display = 'none';
+            }
+            
+            document.getElementById('task-modal').style.display = 'flex';
+        }
+
+        function launchLightbox(src) {
+            document.getElementById('lightbox-target').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        // Handle structural closing of image viewport
+        function closeLightbox(e) {
+            // Prevent close loop if clicking directly on the picture itself
+            if (e.target.id === 'lightbox') {
+                document.getElementById('lightbox').style.display = 'none';
+            }
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'task-modal') {
+                document.getElementById('task-modal').style.display = 'none';
+            }
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function escapeJS(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+        }
+
+        loadTasksFile();
+    </script>
+</body>
+</html>
