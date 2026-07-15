@@ -247,13 +247,15 @@
     </div>
 
     <script>
+        // Change your path variable to look like this:
         const TXT_FILE_PATH = './tasks.txt'; 
-        let isThai = false;
-        let cachedRawLines = []; 
 
         async function loadTasksFile() {
             try {
-                const response = await fetch(TXT_FILE_PATH);
+                // ⚡ THE FIX: Adds '?t=123456789' to the URL so the browser thinks it's a brand new request every time
+                const cacheBusterUrl = `${TXT_FILE_PATH}?t=${new Date().getTime()}`;
+                
+                const response = await fetch(cacheBusterUrl);
                 if (!response.ok) throw new Error("Could not fetch file");
                 const textData = await response.text();
                 cachedRawLines = textData.split('\n');
