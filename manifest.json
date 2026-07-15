@@ -1,0 +1,22 @@
+{
+  "name": "Room 4/1 Hub",
+  "short_name": "Room 4/1",
+  "description": "Student Dashboard and Task Tracker for Room 4/1",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./images/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./images/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
